@@ -1,0 +1,121 @@
+skill_name: nolan-movie-skill
+version: 1.0.0
+description: >
+  融合诺兰式时间操控与盖里奇式多线巧合的电影语言生成技能包。
+  输入场景描述、情绪关键词、时间结构需求，输出分镜脚本、剪辑方案、
+  声音设计及格式化拍摄提示词。
+
+# ========== 1. Agent视角 ==========
+agent:
+  input_schema:
+    scene_description: string          # 场景描述，如“主角在旋转走廊中追逐”
+    style_reference: enum[memento, inception, tenet, odyssey, lock_stock, auto]
+    time_structure: enum[linear, reverse, nested, palindrome, multi_thread, loop]
+    emotion_tone: string               # 如“紧张”“悬疑”“宿命感”
+    output_format: enum[prompt, shot_script, edit_plan, sound_design, all]
+
+  output_schema:
+    prompt_text: string                # 格式化拍摄手法提示词
+    shot_script: string                # 分镜脚本
+    editing_plan: string               # 剪辑方案
+    sound_design: string               # 声音设计
+    atom_used: list                    # 本次调用的原子模块列表
+
+  capabilities:
+    - 解析场景并推荐非线性叙事结构
+    - 组合原子电影语言模块（叙事/剪辑/镜头/声音/色彩）
+    - 生成诺兰+盖里奇风格拍摄提示词
+    - 根据用户反馈调整模块调用优先级
+    - 支持风格模板快速套用
+
+# ========== 2. 脚本优先 ==========
+script_first:
+  master_prompt: core/master_prompt.md          # 主提示词/总纲
+  templates:
+    shot_script: core/templates/shot_script.md  # 分镜脚本模板
+    edit_script: core/templates/edit_script.md  # 剪辑脚本模板
+    sound_script: core/templates/sound_script.md# 声音脚本模板
+
+  generation_flow:
+    - step: 加载核心主提示词 core/master_prompt.md
+    - step: 解析用户输入，匹配风格模板 examples/*.md
+    - step: 根据时间结构需求，调用 atoms/narrative 下的原子模块
+    - step: 调用 atoms/editing、atoms/camera、atoms/sound、atoms/color 组合方案
+    - step: 按模板生成分镜脚本与剪辑方案
+    - step: 输出格式化拍摄手法提示词
+    - step: 记录反馈，更新 atom 权重
+
+  prompt_template: |
+    【诺兰+盖里奇式电影语言提示词】
+    叙事结构：非线性 / 多线交叉 / 嵌套层级 / 回环结构 / 巧合汇聚
+    时间处理：时间膨胀 / 时间逆转 / 倒叙 / 平行时间 / 时间闭环
+    剪辑：交叉剪辑 / 平行蒙太奇 / 倒放 / 匹配剪辑 / 快速切换 / 定格 / 字幕卡
+    镜头语言：IMAX / 65mm实拍 / 主观视角限制 / 对称构图 / 低角度 / 旋转镜头 / 长镜头 / 实拍特效
+    声音设计：脉冲低音 / 谢泼德音调 / 声音倒放 / 环境声渐强 / 音乐与剪辑同步 / 快节奏对白
+    色彩质感：冷色调 / 低饱和 / 高对比 / 自然光 / 胶片颗粒 / 街头质感
+    转场方式：时间码 / 字幕卡 / 物象匹配 / 重复场景 / 声音先行 / 动作匹配
+    信息控制：限制视角 / 延迟揭示 / 规则前置 / 误导剪辑 / 因果倒置
+    节奏：信息密集 / 多线并行 / 前段铺陈 / 中段交叉 / 结尾汇聚加速
+    母题：时间 / 记忆 / 身份 / 因果 / 循环 / 归途 / 命运巧合
+
+# ========== 3. 原子化 ==========
+atoms:
+  narrative:
+    - time_linear                # 线性时间
+    - time_reverse               # 倒叙/逆向时间
+    - nested_dream               # 嵌套层级/梦境时间差
+    - palindrome                 # 回文结构/正逆同框
+    - multi_thread_coincidence   # 多线巧合汇聚
+    - loop                       # 循环/时间闭环
+
+  editing:
+    - cross_cutting              # 交叉剪辑
+    - parallel_montage           # 平行蒙太奇
+    - reverse_playback           # 倒放
+    - match_cut                  # 匹配剪辑
+    - freeze_frame               # 定格
+    - title_card                 # 字幕卡
+
+  camera:
+    - imax_real                  # IMAX/65mm实拍
+    - subjective_pov             # 主观视角限制
+    - symmetry                   # 对称构图
+    - low_angle                  # 低角度
+    - rotate_shot                # 旋转镜头/旋转走廊
+    - long_take                  # 长镜头
+
+  sound:
+    - pulse_bass                 # 脉冲低音
+    - shepard_tone               # 谢泼德音调
+    - reverse_audio              # 逆向音效/声音倒放
+    - dialogue_rapid             # 快节奏对白
+
+  color:
+    - cold_tone                  # 冷色调
+    - low_saturation             # 低饱和
+    - high_contrast              # 高对比
+    - natural_light              # 自然光
+    - film_grain                 # 胶片颗粒
+
+# ========== 4. 自我迭代 ==========
+self_iteration:
+  feedback:
+    - memory/feedback_log.md       # 用户反馈日志
+  versioning:
+    - memory/version_history.md    # 版本历史
+  preference:
+    - memory/user_preferences.json # 用户偏好（如更偏向诺兰还是盖里奇）
+  update_rules:
+    - 每次生成后追加反馈记录
+    - 根据反馈调整 atoms 调用优先级
+    - 新增风格示例时更新 examples/ 目录
+    - 主提示词更新时递增版本号
+    - 支持新增原子模块而不影响已有结构
+
+# 风格示例映射
+style_examples:
+  memento: examples/memento_style.md
+  inception: examples/inception_style.md
+  tenet: examples/tenet_style.md
+  odyssey: examples/odyssey_style.md
+  lock_stock: examples/lock_stock_style.md
