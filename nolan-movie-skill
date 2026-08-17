@@ -15,7 +15,7 @@ agent:
     output_format: enum[prompt, shot_script, edit_plan, sound_design, all]
 
   output_schema:
-    prompt_text: string                # 格式化拍摄手法提示词
+    prompt_text: string                # 格式化拍摄手法提示词1
     shot_script: string                # 分镜脚本
     editing_plan: string               # 剪辑方案
     sound_design: string               # 声音设计
